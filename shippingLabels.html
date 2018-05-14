@@ -1,0 +1,58 @@
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+  <!-- <title>HTML & CSS Avery Labels (5160) by MM at Boulder Information Services</title> -->
+  <link href="labels.css" rel="stylesheet" type="text/css">
+  <style>
+    body {
+        width: 9in;
+        font-family: courier;
+        margin: 0in .1875in;
+    }
+    .label{
+        margin-top: 1px; /*Without this, the outlines show up on previous page*/
+        width: 3.75in; /* plus .6 inches from padding */
+        height: 2.5in; /* plus .125 inches from padding */
+        padding: .125in .3in 0;
+        margin-right: 0in; /* the gutter */
+
+        float: left;
+
+        text-align: center;
+        overflow: hidden;
+
+        outline: 1px dotted; /* outline doesn't occupy space like border does */
+    }
+    .page-break  {
+        clear: left;
+        display:block;
+        page-break-after:always;
+    }
+  </style>
+
+</head>
+
+<body>
+<script type="text/javascript">
+  var numberOfLabelsToPrint = 50;
+  var pageBreakAfter = 10;
+  var totalMarks = 2800;
+  var exportItem = 'Item Name';
+  var exporter = 'Exporter Name,<br/>Address 1,<br/>Address 2, Area, City, State, Country';
+  var consignee = 'Consignee Name, Address 1, Address 2, City ,State, Country';
+  var weightDetails = 'Net Weight: 10 KG';
+
+  for (var mark = 1; mark <= numberOfLabelsToPrint; mark++) {
+    // console.log(mark);
+    $("body").append('<div class="label"><p style="font-weight: bold;text-decoration:underline">'+exportItem+'</p>Exported By: '+exporter+'<br><br>Consignee: '+consignee+'<br><br>'+weightDetails+'<br><br>Marks: '+mark+'/'+ totalMarks + '</div>');
+    // Insert page break 
+    if (mark%pageBreakAfter===0) {
+      $("body").append('<div class="page-break"></div>');
+    }
+  }
+</script>
+</body>
+
+</html>
