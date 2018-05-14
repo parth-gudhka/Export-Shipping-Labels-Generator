@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+  <!-- Bootstrap in media screen as it's messing up the print layout -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" media="screen">
   <!-- <title>HTML & CSS Avery Labels (5160) by MM at Boulder Information Services</title> -->
   <style>
     body {
@@ -10,7 +12,7 @@
         font-family: courier;
         margin: 0in .1875in;
     }
-    .label{
+    .shipping-label{
         /* Avery 5160 labels -- CSS and HTML by MM at Boulder Information Services */
         margin-top: 1px; /*Without this, the outlines show up on previous page*/
         width: 3.75in; /* plus .6 inches from padding */
@@ -30,24 +32,49 @@
         display:block;
         page-break-after:always;
     }
+    .hide {
+      display: none;
+    }
   </style>
-  <link rel="stylesheet" href="print.css" type="text/css" media="print" />
+  <!-- This will hide the form in print -->
+  <style type="text/css" media="print">
+    .noPrint {
+      display: none;
+    }
+  </style>
 
 </head>
 
 <body>
   <!-- <div class=""></div> -->
-  <form class="labels-details noPrint" id="my-form">
-    Number of Labels to print: <input type="number" name="numberOfLabelsToPrint" label="Number of Labels to print" value=50 required><br>
-    Total Marks: <input type="number" name="totalMarks" required value="2800"><br>
-    Item Name: <input type="text" name="exportItem" required value="Item Name"><br>
-    Exporter Details:<br>
-    <textarea name="exporterDetails" rows="4" cols="32">Exporter Name,<br/>Address 1,<br/>Address 2, Area, City, State, Country</textarea><br>
-    Consignee Details:<br>
-    <textarea name="consigneeDetails" rows="4" cols="32">Consignee Name, Address 1, Address 2, City ,State, Country</textarea><br>
-    Weight Details: <input type="text" name="weightDetails" value="Net Weight: 10 KG"><br>
-    <input type="submit" name="submit"/>
+  <form class="labels-details noPrint form-horizontal" id="my-form">
+    <div class="form-group">
+      <label>Number of Labels to print:</label>
+      <input type="number" name="numberOfLabelsToPrint" label="Number of Labels to print" value=50 required></div>
+    <div class="form-group">
+    <label>Total Marks:</label><input type="number" name="totalMarks" required value="2800">
+    </div>
+    <div class="form-group">
+    <label>Item Name:</label>
+    <input type="text" name="exportItem" required value="Item Name"></div>
+    <div class="form-group">
+    <label>Exporter Details:</label><br>
+    <textarea name="exporterDetails" rows="4" cols="32">Exporter Name,<br/>Address 1,<br/>Address 2, Area, City, State, Country</textarea>
+    </div>
+    <div class="form-group">
+    <label>Consignee Details:</label><br>
+    <textarea name="consigneeDetails" rows="4" cols="32">Consignee Name, Address 1, Address 2, City ,State, Country</textarea>
+    </div>
+    <div class="form-group">
+    <label>Weight Details:</label> <input type="text" name="weightDetails" value="Net Weight: 10 KG">
+    </div>
+    <button type="submit" name="submit" class="btn btn-default">Submit</button>
   </form>
+  <div class="print-container hide noPrint">
+    <button onclick="window.print()" class="btn btn-primary print-button">Print</button>
+    <br>
+    <br>
+  </div>
   <!-- <div class="page-break"></div> -->
   <div id="labels-container"></div>
 <script type="text/javascript">
@@ -60,6 +87,7 @@
   function handleSubmit () {
     var $inputs = $('.labels-details :input');
     var $labelsContainer = $("#labels-container");
+    var $printButton = $(".print-container");
 
     var numberOfLabelsToPrint = 50;
     var pageBreakAfter = 10;
@@ -69,6 +97,7 @@
     var consignee = 'Consignee Name, Address 1, Address 2, City ,State, Country';
     var weightDetails = 'Net Weight: 10 KG';
 
+    $printButton.addClass('hide');
     $labelsContainer.empty();
 
     var values = {};
@@ -86,11 +115,12 @@
 
     for (var mark = 1; mark <= numberOfLabelsToPrint; mark++) {
       // console.log(mark);
-      $("#labels-container").append('<div class="label"><p style="font-weight: bold;text-decoration:underline">'+exportItem+'</p>Exported By: '+exporter+'<br><br>Consignee: '+consignee+'<br><br>'+weightDetails+'<br><br>Marks: '+mark+'/'+ totalMarks + '</div>');
+      $("#labels-container").append('<div class="shipping-label"><p style="font-weight: bold;text-decoration:underline">'+exportItem+'</p>Exported By: '+exporter+'<br><br>Consignee: '+consignee+'<br><br>'+weightDetails+'<br><br>Marks: '+mark+'/'+ totalMarks + '</div>');
       if (mark%pageBreakAfter===0) {
         $("#labels-container").append('<div class="page-break"></div>');
       }
     }
+    $printButton.removeClass('hide');
   }
   var numberOfLabelsToPrint = 50;
   var pageBreakAfter = 10;
