@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
   <!-- <title>HTML & CSS Avery Labels (5160) by MM at Boulder Information Services</title> -->
-  <link href="labels.css" rel="stylesheet" type="text/css">
   <style>
     body {
         width: 9in;
@@ -12,6 +11,7 @@
         margin: 0in .1875in;
     }
     .label{
+        /* Avery 5160 labels -- CSS and HTML by MM at Boulder Information Services */
         margin-top: 1px; /*Without this, the outlines show up on previous page*/
         width: 3.75in; /* plus .6 inches from padding */
         height: 2.5in; /* plus .125 inches from padding */
@@ -31,11 +31,67 @@
         page-break-after:always;
     }
   </style>
+  <link rel="stylesheet" href="print.css" type="text/css" media="print" />
 
 </head>
 
 <body>
+  <!-- <div class=""></div> -->
+  <form class="labels-details noPrint" id="my-form">
+    Number of Labels to print: <input type="number" name="numberOfLabelsToPrint" label="Number of Labels to print" value=50 required><br>
+    Total Marks: <input type="number" name="totalMarks" required value="2800"><br>
+    Item Name: <input type="text" name="exportItem" required value="Item Name"><br>
+    Exporter Details:<br>
+    <textarea name="exporterDetails" rows="4" cols="32">Exporter Name,<br/>Address 1,<br/>Address 2, Area, City, State, Country</textarea><br>
+    Consignee Details:<br>
+    <textarea name="consigneeDetails" rows="4" cols="32">Consignee Name, Address 1, Address 2, City ,State, Country</textarea><br>
+    Weight Details: <input type="text" name="weightDetails" value="Net Weight: 10 KG"><br>
+    <input type="submit" name="submit"/>
+  </form>
+  <!-- <div class="page-break"></div> -->
+  <div id="labels-container"></div>
 <script type="text/javascript">
+  $('.labels-details').on('submit', function () {
+    handleSubmit();
+    window.print();
+    return false;
+  });
+
+  function handleSubmit () {
+    var $inputs = $('.labels-details :input');
+    var $labelsContainer = $("#labels-container");
+
+    var numberOfLabelsToPrint = 50;
+    var pageBreakAfter = 10;
+    var totalMarks = 2800;
+    var exportItem = 'Item Name';
+    var exporter = 'Exporter Name,<br/>Address 1,<br/>Address 2, Area, City, State, Country';
+    var consignee = 'Consignee Name, Address 1, Address 2, City ,State, Country';
+    var weightDetails = 'Net Weight: 10 KG';
+
+    $labelsContainer.empty();
+
+    var values = {};
+    $inputs.each(function() {
+        values[this.name] = $(this).val();
+    });
+
+    numberOfLabelsToPrint = values["numberOfLabelsToPrint"] ? values["numberOfLabelsToPrint"] : numberOfLabelsToPrint;
+    totalMarks = values["totalMarks"] ? values["totalMarks"] : totalMarks;
+    exportItem = values["exportItem"] ? values["exportItem"] : exportItem;
+    exporter = values["exporterDetails"] ? values["exporterDetails"] : exporter;
+    consignee = values["consigneeDetails"] ? values["consigneeDetails"] : consignee;
+    weightDetails = values["weightDetails"] ? values["weightDetails"] : weightDetails;
+    pageBreakAfter = values["pageBreakAfter"] ? values["pageBreakAfter"] : pageBreakAfter;
+
+    for (var mark = 1; mark <= numberOfLabelsToPrint; mark++) {
+      // console.log(mark);
+      $("#labels-container").append('<div class="label"><p style="font-weight: bold;text-decoration:underline">'+exportItem+'</p>Exported By: '+exporter+'<br><br>Consignee: '+consignee+'<br><br>'+weightDetails+'<br><br>Marks: '+mark+'/'+ totalMarks + '</div>');
+      if (mark%pageBreakAfter===0) {
+        $("#labels-container").append('<div class="page-break"></div>');
+      }
+    }
+  }
   var numberOfLabelsToPrint = 50;
   var pageBreakAfter = 10;
   var totalMarks = 2800;
@@ -43,15 +99,6 @@
   var exporter = 'Exporter Name,<br/>Address 1,<br/>Address 2, Area, City, State, Country';
   var consignee = 'Consignee Name, Address 1, Address 2, City ,State, Country';
   var weightDetails = 'Net Weight: 10 KG';
-
-  for (var mark = 1; mark <= numberOfLabelsToPrint; mark++) {
-    // console.log(mark);
-    $("body").append('<div class="label"><p style="font-weight: bold;text-decoration:underline">'+exportItem+'</p>Exported By: '+exporter+'<br><br>Consignee: '+consignee+'<br><br>'+weightDetails+'<br><br>Marks: '+mark+'/'+ totalMarks + '</div>');
-    // Insert page break 
-    if (mark%pageBreakAfter===0) {
-      $("body").append('<div class="page-break"></div>');
-    }
-  }
 </script>
 </body>
 
